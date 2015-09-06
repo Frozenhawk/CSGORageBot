@@ -25,7 +25,7 @@ public class Main {
                 ".raffle_box_lg"));
         for (int i = 0; i < raffleDivs.size(); i++) {
             raffleDivs.get(i).findElement(By.cssSelector("a")).click();
-            int timer = 17;
+            int timer = 20;
             int currentTime = 0;
             JavascriptExecutor js = (JavascriptExecutor)driver;
             do{
@@ -33,20 +33,26 @@ public class Main {
                 Thread.sleep(5000);
                 currentTime++;
             }while(currentTime < timer);
-            //TODO scrolling to bottom of the page
             itemEntry(driver);
-            //driver.navigate().back();
-            //raffleDivs = driver.findElements(By.cssSelector("" +
-                   // ".raffle_box_lg"));
+            driver.navigate().back();
+            raffleDivs = driver.findElements(By.cssSelector("" +
+                    ".raffle_box_lg"));
         }
 
     }
     public static void itemEntry(WebDriver d) {
-        WebElement slot = d.findElement(By.xpath("//div[@class='slots']"));
-        if(slot == null) return;
-        System.out.println(slot.getTagName());
+        WebElement slot = null;
+        try {
+            slot = d.findElement(By.xpath("//div[@class='slots']"));
+        } catch (NoSuchElementException e) {
+            return;
+        }
         slot.click();
-        d.findElement(By.xpath("//button[@id='getslots']")).click();
+        try {
+            d.findElement(By.xpath("//button[@id='getslots']")).click();
+        } catch(NoSuchElementException e) {
+            return;
+        }
         try {
             Alert alert = d.switchTo().alert();
             if (!alert.getText().equals("Success!")) {
